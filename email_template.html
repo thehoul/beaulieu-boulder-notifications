@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border: 1px solid #dddddd;
+            text-align: center;
+        }
+        h1 {
+            color: #333333;
+        }
+        p {
+            color: #555555;
+        }
+
+        img.color {
+            width: 40px;
+            height: 40px;
+        }
+        img.grade {
+            width: 20px;
+            height: 20px;
+        }
+        img.map {
+            width: 400px;
+
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        th.txt {
+            text-align: left;
+            
+        }
+        th.img {
+            text-align: center;
+        }
+        td.img {
+            text-align: center;
+        }
+        td.txt {
+            text-align: left;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        svg {
+            width: 400px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        p {
+            text-align: left;
+            font-size: 15px;
+            padding: 0px 0;
+            margin: 0;
+        }
+        h2 {
+            text-align: left;    
+            font-size: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ nb }} nouveaux blocs le {{ date }}</h1>
+
+        {% for stat in stats %}
+        <p>{{ stat.count }} {{ stat.grade }}{{ 's' if stat.count > 1 }}</p>
+        {% endfor %}
+        <br>
+        
+        <h2>Nouveaux blocs</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="txt">Ouvreur</th>
+                    <th class="img">Difficulté</th>
+                    <th class="img">Couleur</th>
+            </thead>
+            <tbody>
+                {% for route in routes %}
+                <tr>    
+                    <td class="txt">{{ route.setterName }}</td>
+                    <td class="img"><img class="grade" src="cid:grade_{{ route.grade }}" alt="{{ route.grade }}"></td>
+                    <td class="img"><img class="color" src="cid:color_{{ route.holdsColors }}" alt></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+        <h2>Emplacement</h2>
+        <img class="map" src="cid:gym_map" alt="Gym Map">
+    </div>
+</body>
+</html>

@@ -1,0 +1,6 @@
+cairosvg
+pandas
+requests
+lxml
+beautifulsoup4
+jinja2

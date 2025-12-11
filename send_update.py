@@ -1,0 +1,91 @@
+from datetime import datetime
+from get_image import *
+from get_routes import get_routes_at_date
+from send_email import send_email
+from jinja2 import Environment, FileSystemLoader
+import os
+import pandas as pd
+import logging
+
+TEMPLATE = "email_template.html"
+
+DEFAULT_GRADE_ORDER = ["bleu", "vert", "jaune", "orange", "rouge", "noir", "unknown"]
+
+logging.basicConfig(filename="logging.log",
+    filemode='a',
+    format='%(asctime)s,%(msecs)03d %(name)s %(levelname)s %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    level=logging.INFO)
+
+logger = logging.getLogger("testLogger")
+logger.info("Logger is running")
+
+# Set up Jinja2 environment
+env = Environment(loader=FileSystemLoader('.'))
+template = env.get_template(TEMPLATE)
+
+# Get routes
+today = datetime.today().strftime("%Y-%m-%d")
+new_routes = get_routes_at_date(today)
+
+if new_routes.empty:
+    logger.info("No new routes found for today")
+    print("No new routes found for today.")
+    exit()
+
+new_routes['grade'] = new_routes['grade'].str.lower()
+new_routes['grade_order'] = pd.Categorical(new_routes['grade'], categories=DEFAULT_GRADE_ORDER, ordered=True)
+new_routes = new_routes.sort_values('grade_order').drop(columns=['grade_order'])
+
+per_grade = new_routes.groupby('grade').size().reset_index(name='count')
+per_grade['grade'] = pd.Categorical(per_grade['grade'], categories=DEFAULT_GRADE_ORDER, ordered=True)
+per_grade = per_grade.sort_values('grade')
+stat_grades = per_grade.to_dict(orient='records')
+
+# Get and modify the gym map SVG to highlight the sectors
+images_attachements = []
+svg = get_map_svg()
+sectors = new_routes['sector'].unique()
+for sector in sectors:
+    svg = modify_svg_for_sector(svg, sector)
+
+# Set the width and height for better visibility
+svg = set_svg_size(svg, 1000, 810)
+svg_to_png(svg, "gym_map.png")
+images_attachements.append("gym_map.png")
+
+# Get the images for grades and colors
+grades = new_routes['grade'].unique()
+colors = new_routes['holdsColors'].unique()
+for grade in grades:
+    if not grade:
+        # Grade might be missing sometimes so skip if is the case
+        continue
+    img_name = f"grade_{grade}.png"
+    images_attachements.append(img_name)
+    img = get_grade_image(grade)
+    svg_to_png(img.decode('utf-8'), img_name)
+
+for color in colors:
+    img_name = f"color_{color}.png"
+    images_attachements.append(img_name)
+    img = get_color_image(color)
+    svg_to_png(img.decode('utf-8'), img_name)
+
+# Render the template with the routes data
+html_content = template.render(routes=new_routes.to_dict(orient='records'), date=today, nb=len(new_routes), stats=stat_grades)
+
+with open("recipients.txt", "r") as f:
+    recipients = [line.strip() for line in f if line.strip()]
+
+# Send the email
+send_email(html_content, 
+    subject=f"New climbing routes at Beaulieu on {today} !!", 
+    recipients=recipients,
+    images=images_attachements)
+
+logger.info("Email sent!")
+
+# Cleanup the generated images
+for img in images_attachements:
+    os.remove(img)
