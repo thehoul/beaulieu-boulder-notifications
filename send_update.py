@@ -75,6 +75,10 @@ for color in colors:
 # Render the template with the routes data
 html_content = template.render(routes=new_routes.to_dict(orient='records'), date=today, nb=len(new_routes), stats=stat_grades)
 
+# Verify recipients file exists
+if not os.path.exists("recipients.txt"):
+    raise FileNotFoundError("Recipients file 'recipients.txt' not found.")
+# Read recipients from a file
 with open("recipients.txt", "r") as f:
     recipients = [line.strip() for line in f if line.strip()]
 

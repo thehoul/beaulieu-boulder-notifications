@@ -4,7 +4,10 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 import configparser
 
+# Verify the configuration exists
 config = configparser.ConfigParser()
+if not config.read('config.cfg'):
+    raise FileNotFoundError("Configuration file 'config.cfg' not found.")
 config.read('config.cfg')
 
 def send_email(html_content, subject, recipients, images=[]):
