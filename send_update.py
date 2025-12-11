@@ -2,6 +2,7 @@ from datetime import datetime
 from get_image import *
 from get_routes import get_routes_at_date
 from send_email import send_email
+from map import highlight_map, get_map, set_map_size
 from jinja2 import Environment, FileSystemLoader
 import os
 import pandas as pd
@@ -25,7 +26,8 @@ env = Environment(loader=FileSystemLoader('.'))
 template = env.get_template(TEMPLATE)
 
 # Get routes
-today = datetime.today().strftime("%Y-%m-%d")
+#today = datetime.today().strftime("%Y-%m-%d")
+today = "2025-12-11"
 new_routes = get_routes_at_date(today)
 
 if new_routes.empty:
@@ -44,15 +46,19 @@ stat_grades = per_grade.to_dict(orient='records')
 
 # Get and modify the gym map SVG to highlight the sectors
 images_attachements = []
-svg = get_map_svg()
-sectors = new_routes['sector'].unique()
+new_routes['sector-section'] = new_routes.apply(lambda row: (row['sector'], int(row['section'])), axis=1)
+sectors = new_routes['sector-section'].unique()
+svg = get_map()
+
+# Highlight the sectors/sections on the map
 for sector in sectors:
-    svg = modify_svg_for_sector(svg, sector)
+    svg = highlight_map(svg, sector[0], sector[1])
 
 # Set the width and height for better visibility
-svg = set_svg_size(svg, 1000, 810)
-svg_to_png(svg, "gym_map.png")
-images_attachements.append("gym_map.png")
+svg = set_map_size(svg, 1020, 865)
+gym_map_path = "gym_map.png"
+svg_to_png(svg, gym_map_path)
+images_attachements.append(gym_map_path)
 
 # Get the images for grades and colors
 grades = new_routes['grade'].unique()
@@ -89,7 +95,6 @@ send_email(html_content,
     images=images_attachements)
 
 logger.info("Email sent!")
-
 # Cleanup the generated images
 for img in images_attachements:
     os.remove(img)
