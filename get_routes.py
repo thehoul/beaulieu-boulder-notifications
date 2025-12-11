@@ -1,6 +1,7 @@
 import requests as req
 from bs4 import BeautifulSoup
 import pandas as pd
+import re
 
 target = "https://climbingroute.app/en/salles/lausanne-beaulieu/blocs/liste"
 
@@ -24,6 +25,7 @@ def get_routes():
             "grade": item.get("data-grade"),
             "color": item.get("data-color"),
             "sector": item.get("data-sector"),
+            "section": 0,
             "setterCode": item.get("data-route-setter"),
             "date": item.get("data-date"),
         }
@@ -34,6 +36,9 @@ def get_routes():
         # Extract the setter name manually
         route_details = item.select_one(".route-details")
         r["setterName"] = route_details.contents[0].strip()
+        match = re.search(r"(\d+)\s*-\s*(\d+)", route_details.text)
+        if match:
+            r['section'] = match.group(2)
 
         # Extract the holds colours manually
         holds_image = item.select_one(".me-1 img")
