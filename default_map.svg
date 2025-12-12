@@ -23,6 +23,16 @@
 	<polygon points="1021.2 158.8 1021.2 46.5 981.1 46.5 981.1 57.2 1010.9 57.2 1010.9 146.9 981.1 146.9 981.1 158.8 1021.2 158.8" style="fill: #9a9ea4; stroke: #1d1d1b; stroke-miterlimit: 10;"></polygon>
 	</g>
 
+	<style>
+		.text {
+			font: bold 40px sans-serif;
+		}
+	</style>
+	<text x="450" y="330" class="text">1</text>
+	<text x="650" y="580" class="text">2</text>
+	<text x="840" y="330" class="text">3</text>
+	<text x="835" y="730" class="text">4</text>
+	<text x="975" y="540" class="text">5</text>
 
 <g id="sections">
 	<g id="s-bloc-1">
