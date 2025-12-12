@@ -95,6 +95,8 @@
                     <th class="txt">Ouvreur</th>
                     <th class="img">Difficulté</th>
                     <th class="img">Couleur</th>
+                    <th class="img">Bloc</th>
+                    <th class="img">Secteur</th>
             </thead>
             <tbody>
                 {% for route in routes %}
@@ -102,6 +104,8 @@
                     <td class="txt">{{ route.setterName }}</td>
                     <td class="img"><img class="grade" src="cid:grade_{{ route.grade }}" alt="{{ route.grade }}"></td>
                     <td class="img"><img class="color" src="cid:color_{{ route.holdsColors }}" alt></td>
+                    <td class="img">{{ route.island if route.island != 0 else '-' }}</td>
+                    <td class="img">{{ route.section if route.section != 0 else '-' }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

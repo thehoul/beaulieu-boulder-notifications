@@ -25,6 +25,7 @@ def get_routes():
             "grade": item.get("data-grade"),
             "color": item.get("data-color"),
             "sector": item.get("data-sector"),
+            "island": 0,
             "section": 0,
             "setterCode": item.get("data-route-setter"),
             "date": item.get("data-date"),
@@ -38,6 +39,7 @@ def get_routes():
         r["setterName"] = route_details.contents[0].strip()
         match = re.search(r"(\d+)\s*-\s*(\d+)", route_details.text)
         if match:
+            r['island'] = match.group(1)
             r['section'] = match.group(2)
 
         # Extract the holds colours manually
