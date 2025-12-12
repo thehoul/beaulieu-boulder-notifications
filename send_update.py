@@ -26,8 +26,7 @@ env = Environment(loader=FileSystemLoader('.'))
 template = env.get_template(TEMPLATE)
 
 # Get routes
-#today = datetime.today().strftime("%Y-%m-%d")
-today = "2025-12-11"
+today = datetime.today().strftime("%Y-%m-%d")
 new_routes = get_routes_at_date(today)
 
 if new_routes.empty:
