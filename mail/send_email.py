@@ -2,14 +2,16 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
-from config import get_section
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 def send_email(html_content, subject, recipients, images=[]):
-    email_config = get_section("MAIL")
-    smtp_host = email_config['MAIL_SERVER']
-    smtp_port = email_config['MAIL_PORT']
-    username = email_config['ADDRESS']
-    password = email_config['PASSWORD']
+    smtp_host = os.environ['MAIL_SERVER']
+    smtp_port = os.environ['MAIL_PORT']
+    username = os.environ['ADDRESS']
+    password = os.environ['PASSWORD']
 
     msg = MIMEMultipart("related")
     msg["Subject"] = subject
