@@ -1,4 +1,5 @@
-*.cfg
+*.env
+*.csv
 *.sh
 *.log
 .venv/

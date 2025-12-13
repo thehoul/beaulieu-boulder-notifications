@@ -2,16 +2,24 @@ import requests as req
 from bs4 import BeautifulSoup
 import pandas as pd
 import re
+from util.config import get_section
+from util.logging import get_logger
 
-target = "https://climbingroute.app/en/salles/lausanne-beaulieu/blocs/liste"
+logger = get_logger("imageLoader")
+TARGET = get_section("URLS")['LIST_TARGET']
+DEFAULT_ROUTE_DESTINATION = get_section("ROUTES")['CSV_PATH']
 
-def get_routes():
+# Download and parse routes from the climbing route website and 
+# return whether the update was successful
+def update_routes_record(path_destination=DEFAULT_ROUTE_DESTINATION):
     # Send a GET request to the target URL
-    blocs_liste = req.get(target)
-    assert blocs_liste.status_code == 200
-
+    liste_html = req.get(TARGET)
+    if liste_html.status_code != 200:
+        logger.error(f"Failed to download routes, status code: {liste_html.status_code}")
+        return False
+    
     # Parse the HTML content using BeautifulSoup
-    soup = BeautifulSoup(blocs_liste.text, 'html.parser')
+    soup = BeautifulSoup(liste_html.text, 'html.parser')
 
     # Extract route information
     routes = []
@@ -51,15 +59,17 @@ def get_routes():
 
         routes.append(r)
 
-    return routes
+    # Save routes to CSV
+    df = pd.DataFrame(routes)
+    df.to_csv(path_destination, index=False)
+    logger.info(f"Routes data updated and saved to {path_destination}")
+    return True
 
+# Get routes added at a specific date
 def get_routes_at_date(date_str):
     # Get all routes
-    routes = get_routes()
-    df = pd.DataFrame(routes)
+    df = pd.read_csv(DEFAULT_ROUTE_DESTINATION)
     df['date'] = pd.to_datetime(df['date'], errors='coerce')
-
     # Filter routes by the specified date
     new = df[df['date'] == date_str]
-
     return new

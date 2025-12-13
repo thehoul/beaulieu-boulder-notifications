@@ -1,10 +1,9 @@
 from bs4 import BeautifulSoup
-import logging
+from util.logging import get_logger
+from util.config import get_section
 
-logger = logging.getLogger("mapLogger")
-
-
-MAP_PATH = "default_map.svg"
+logger = get_logger("mapLogger")
+MAP_PATH = get_section("IMAGES")['MAP_PATH']
 
 def set_map_size(svg_content, width, height):
     soup = BeautifulSoup(svg_content, 'html.parser')
