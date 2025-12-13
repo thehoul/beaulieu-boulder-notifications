@@ -8,13 +8,13 @@ from util.logging import get_logger
 logger = get_logger("imageLoader")
 target = get_section("URLS")['LIST_TARGET']
 
-def get_routes():
+def download_routes():
     # Send a GET request to the target URL
-    blocs_liste = req.get(target)
-    assert blocs_liste.status_code == 200
+    liste_html = req.get(target)
+    assert liste_html.status_code == 200
 
     # Parse the HTML content using BeautifulSoup
-    soup = BeautifulSoup(blocs_liste.text, 'html.parser')
+    soup = BeautifulSoup(liste_html.text, 'html.parser')
 
     # Extract route information
     routes = []
@@ -58,7 +58,7 @@ def get_routes():
 
 def get_routes_at_date(date_str):
     # Get all routes
-    routes = get_routes()
+    routes = download_routes()
     df = pd.DataFrame(routes)
     df['date'] = pd.to_datetime(df['date'], errors='coerce')
 
