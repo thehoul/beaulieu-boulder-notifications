@@ -9,13 +9,10 @@ import pandas as pd
 from util.logging import get_logger
 from util.config import get_section
 
-location = get_section("GYM")['LOCATION']
-
-TEMPLATE = "email_template.html"
-
-DEFAULT_GRADE_ORDER = ["bleu", "vert", "jaune", "orange", "rouge", "noir", "unknown"]
-
 logger = get_logger("main")
+LOCATION = get_section("GYM")['LOCATION']
+TEMPLATE = get_section("TEMPLATES")["EMAIL_TEMPLATE_PATH"]
+DEFAULT_GRADE_ORDER = ["bleu", "vert", "jaune", "orange", "rouge", "noir", "unknown"]
 
 logger.info("Starting update process")
 
@@ -88,7 +85,7 @@ with open("recipients.txt", "r") as f:
 
 # Send the email
 send_email(html_content, 
-    subject=f"Nouveaux blocs à {location} le {today} !!", 
+    subject=f"Nouveaux blocs à {LOCATION} le {today} !!", 
     recipients=recipients,
     images=images_attachements)
 
