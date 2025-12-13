@@ -6,14 +6,14 @@ from util.config import get_section
 from util.logging import get_logger
 
 logger = get_logger("imageLoader")
-target = get_section("URLS")['LIST_TARGET']
-DEFAULT_ROUTE_DESTINATION = "routes.csv"
+TARGET = get_section("URLS")['LIST_TARGET']
+DEFAULT_ROUTE_DESTINATION = get_section("ROUTES")['CSV_PATH']
 
 # Download and parse routes from the climbing route website and 
 # return whether the update was successful
 def update_routes_record(path_destination=DEFAULT_ROUTE_DESTINATION):
     # Send a GET request to the target URL
-    liste_html = req.get(target)
+    liste_html = req.get(TARGET)
     if liste_html.status_code != 200:
         logger.error(f"Failed to download routes, status code: {liste_html.status_code}")
         return False
