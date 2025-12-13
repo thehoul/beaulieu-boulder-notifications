@@ -6,20 +6,15 @@ from map import highlight_map, get_map, set_map_size
 from jinja2 import Environment, FileSystemLoader
 import os
 import pandas as pd
-import logging
+from util.logging import get_logger
 
 TEMPLATE = "email_template.html"
 
 DEFAULT_GRADE_ORDER = ["bleu", "vert", "jaune", "orange", "rouge", "noir", "unknown"]
 
-logging.basicConfig(filename="logging.log",
-    filemode='a',
-    format='%(asctime)s,%(msecs)03d %(name)s %(levelname)s %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    level=logging.INFO)
+logger = get_logger("main")
 
-logger = logging.getLogger("testLogger")
-logger.info("Logger is running")
+logger.info("Starting update process")
 
 # Set up Jinja2 environment
 env = Environment(loader=FileSystemLoader('.'))
@@ -31,13 +26,14 @@ new_routes = get_routes_at_date(today)
 
 if new_routes.empty:
     logger.info("No new routes found for today")
-    print("No new routes found for today.")
     exit()
 
+# Format and sort the routes
 new_routes['grade'] = new_routes['grade'].str.lower()
 new_routes['grade_order'] = pd.Categorical(new_routes['grade'], categories=DEFAULT_GRADE_ORDER, ordered=True)
 new_routes = new_routes.sort_values('grade_order').drop(columns=['grade_order'])
 
+# Get statistics per grade
 per_grade = new_routes.groupby('grade').size().reset_index(name='count')
 per_grade['grade'] = pd.Categorical(per_grade['grade'], categories=DEFAULT_GRADE_ORDER, ordered=True)
 per_grade = per_grade.sort_values('grade')
@@ -53,7 +49,7 @@ svg = get_map()
 for sector in sectors:
     svg = highlight_map(svg, sector[0], sector[1])
 
-# Set the width and height for better visibility
+# Set the width and height of the map for better visibility
 svg = set_map_size(svg, 1020, 865)
 gym_map_path = "gym_map.png"
 svg_to_png(svg, gym_map_path)

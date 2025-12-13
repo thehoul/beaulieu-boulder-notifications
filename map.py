@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
-import logging
+from util.logging import get_logger
 
-logger = logging.getLogger("mapLogger")
+logger = get_logger("mapLogger")
 
 
 MAP_PATH = "default_map.svg"
