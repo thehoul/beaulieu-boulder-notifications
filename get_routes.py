@@ -2,8 +2,11 @@ import requests as req
 from bs4 import BeautifulSoup
 import pandas as pd
 import re
+from util.config import get_section
+from util.logging import get_logger
 
-target = "https://climbingroute.app/en/salles/lausanne-beaulieu/blocs/liste"
+logger = get_logger("imageLoader")
+target = get_section("URLS")['LIST_TARGET']
 
 def get_routes():
     # Send a GET request to the target URL
