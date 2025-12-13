@@ -7,12 +7,17 @@ from util.logging import get_logger
 
 logger = get_logger("imageLoader")
 target = get_section("URLS")['LIST_TARGET']
+DEFAULT_ROUTE_DESTINATION = "routes.csv"
 
-def download_routes():
+# Download and parse routes from the climbing route website and 
+# return whether the update was successful
+def update_routes_record(path_destination=DEFAULT_ROUTE_DESTINATION):
     # Send a GET request to the target URL
     liste_html = req.get(target)
-    assert liste_html.status_code == 200
-
+    if liste_html.status_code != 200:
+        logger.error(f"Failed to download routes, status code: {liste_html.status_code}")
+        return False
+    
     # Parse the HTML content using BeautifulSoup
     soup = BeautifulSoup(liste_html.text, 'html.parser')
 
@@ -54,15 +59,17 @@ def download_routes():
 
         routes.append(r)
 
-    return routes
+    # Save routes to CSV
+    df = pd.DataFrame(routes)
+    df.to_csv(path_destination, index=False)
+    logger.info(f"Routes data updated and saved to {path_destination}")
+    return True
 
+# Get routes added at a specific date
 def get_routes_at_date(date_str):
     # Get all routes
-    routes = download_routes()
-    df = pd.DataFrame(routes)
+    df = pd.read_csv(DEFAULT_ROUTE_DESTINATION)
     df['date'] = pd.to_datetime(df['date'], errors='coerce')
-
     # Filter routes by the specified date
     new = df[df['date'] == date_str]
-
     return new
