@@ -1,7 +1,7 @@
 from datetime import datetime
 from get_image import *
 from get_routes import get_routes_at_date
-from send_email import send_email
+from mail.send_email import send_email
 from map import highlight_map, get_map, set_map_size
 from jinja2 import Environment, FileSystemLoader
 import os
