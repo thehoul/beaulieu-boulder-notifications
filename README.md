@@ -1,13 +1,12 @@
 ## Usage
 
-1. create a `config.cfg` file with the following minimum requirements:
+1. create a `.env` file with the following information in `/mail`:
 
 ```
-[MAIL]
-MAIL_SERVER = mail.server.com
-MAIL_PORT = 587
-ADDRESS = address@domain.com
-PASSWORD = password
+MAIL_SERVER=mail.server.com
+MAIL_PORT=587
+ADDRESS=address@domain.com
+PASSWORD=password
 ```
 
 2. Then create a `recipients.txt` file containing the destination email addresses:

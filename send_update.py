@@ -1,18 +1,18 @@
 from datetime import datetime
 from get_image import *
 from get_routes import get_routes_at_date
-from send_email import send_email
+from mail.send_email import send_email
 from map import highlight_map, get_map, set_map_size
 from jinja2 import Environment, FileSystemLoader
 import os
 import pandas as pd
 from util.logging import get_logger
-
-TEMPLATE = "email_template.html"
-
-DEFAULT_GRADE_ORDER = ["bleu", "vert", "jaune", "orange", "rouge", "noir", "unknown"]
+from util.config import get_section
 
 logger = get_logger("main")
+LOCATION = get_section("GYM")['LOCATION']
+TEMPLATE = get_section("TEMPLATES")["EMAIL_TEMPLATE_PATH"]
+DEFAULT_GRADE_ORDER = ["bleu", "vert", "jaune", "orange", "rouge", "noir", "unknown"]
 
 logger.info("Starting update process")
 
@@ -85,7 +85,7 @@ with open("recipients.txt", "r") as f:
 
 # Send the email
 send_email(html_content, 
-    subject=f"New climbing routes at Beaulieu on {today} !!", 
+    subject=f"Nouveaux blocs à {LOCATION} le {today} !!", 
     recipients=recipients,
     images=images_attachements)
 
