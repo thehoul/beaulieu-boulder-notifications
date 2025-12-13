@@ -1,6 +1,6 @@
 from datetime import datetime
 from get_image import *
-from get_routes import get_routes_at_date
+from routes import get_routes_at_date, update_routes_record
 from mail.send_email import send_email
 from map import highlight_map, get_map, set_map_size
 from jinja2 import Environment, FileSystemLoader
@@ -20,10 +20,10 @@ logger.info("Starting update process")
 env = Environment(loader=FileSystemLoader('.'))
 template = env.get_template(TEMPLATE)
 
-# Get routes
+# Update the routes record and load today's new routes
+update_routes_record()
 today = datetime.today().strftime("%Y-%m-%d")
 new_routes = get_routes_at_date(today)
-
 if new_routes.empty:
     logger.info("No new routes found for today")
     exit()
