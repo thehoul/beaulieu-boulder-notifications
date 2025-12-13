@@ -5,7 +5,7 @@ CONFIG_FILE = "config.cfg"
 # Verify the configuration exists
 config = configparser.ConfigParser()
 if not config.read(CONFIG_FILE):
-    raise FileNotFoundError("Configuration file 'config.cfg' not found.")
+    raise FileNotFoundError(f"Configuration file {CONFIG_FILE} not found.")
 # Load the configuration
 config.read(CONFIG_FILE)
 
