@@ -6,7 +6,7 @@ from map import highlight_map, get_map, set_map_size
 from jinja2 import Environment, FileSystemLoader
 import os
 import pandas as pd
-from logging.logging import get_logger
+from util.logging import get_logger
 
 TEMPLATE = "email_template.html"
 
