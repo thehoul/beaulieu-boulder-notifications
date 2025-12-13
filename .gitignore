@@ -1,4 +1,5 @@
 *.env
+*.csv
 *.sh
 *.log
 .venv/
