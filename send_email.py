@@ -2,20 +2,14 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
-import configparser
-
-# Verify the configuration exists
-config = configparser.ConfigParser()
-if not config.read('config.cfg'):
-    raise FileNotFoundError("Configuration file 'config.cfg' not found.")
-config.read('config.cfg')
+from config import get_section
 
 def send_email(html_content, subject, recipients, images=[]):
-
-    smtp_host = config['MAIL']['MAIL_SERVER']
-    smtp_port = config['MAIL']['MAIL_PORT']
-    username = config['MAIL']['ADDRESS']
-    password = config['MAIL']['PASSWORD']
+    email_config = get_section("MAIL")
+    smtp_host = email_config['MAIL_SERVER']
+    smtp_port = email_config['MAIL_PORT']
+    username = email_config['ADDRESS']
+    password = email_config['PASSWORD']
 
     msg = MIMEMultipart("related")
     msg["Subject"] = subject
