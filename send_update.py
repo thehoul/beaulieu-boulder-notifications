@@ -55,18 +55,8 @@ gym_map_path = "gym_map.png"
 svg_to_png(svg, gym_map_path)
 images_attachements.append(gym_map_path)
 
-# Get the images for grades and colors
-grades = new_routes['grade'].unique()
+# Get the images for holds
 colors = new_routes['holdsColors'].unique()
-for grade in grades:
-    if not grade:
-        # Grade might be missing sometimes so skip if is the case
-        continue
-    img_name = f"grade_{grade}.png"
-    images_attachements.append(img_name)
-    img = get_grade_image(grade)
-    svg_to_png(img.decode('utf-8'), img_name)
-
 for color in colors:
     img_name = f"color_{color}.png"
     images_attachements.append(img_name)
