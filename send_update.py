@@ -1,5 +1,5 @@
 from datetime import datetime
-from get_image import *
+from images.images import get_hold_image, svg_to_png
 from routes import get_routes_at_date, update_routes_record
 from mail.send_email import send_email
 from map import highlight_map, get_map, set_map_size
@@ -55,23 +55,12 @@ gym_map_path = "gym_map.png"
 svg_to_png(svg, gym_map_path)
 images_attachements.append(gym_map_path)
 
-# Get the images for grades and colors
-grades = new_routes['grade'].unique()
-colors = new_routes['holdsColors'].unique()
-for grade in grades:
-    if not grade:
-        # Grade might be missing sometimes so skip if is the case
-        continue
-    img_name = f"grade_{grade}.png"
-    images_attachements.append(img_name)
-    img = get_grade_image(grade)
-    svg_to_png(img.decode('utf-8'), img_name)
-
-for color in colors:
-    img_name = f"color_{color}.png"
-    images_attachements.append(img_name)
-    img = get_color_image(color)
-    svg_to_png(img.decode('utf-8'), img_name)
+# Get the images for holds
+holds_colors = new_routes['holdsColors'].unique()
+for hold_color in holds_colors:
+    image_path = get_hold_image(hold_color)
+    if image_path:
+        images_attachements.append(image_path)
 
 # Render the template with the routes data
 html_content = template.render(routes=new_routes.to_dict(orient='records'), date=today, nb=len(new_routes), stats=stat_grades)
@@ -90,6 +79,3 @@ send_email(html_content,
     images=images_attachements)
 
 logger.info("Email sent!")
-# Cleanup the generated images
-for img in images_attachements:
-    os.remove(img)

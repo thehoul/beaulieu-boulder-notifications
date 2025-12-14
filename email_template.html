@@ -76,6 +76,36 @@
             text-align: left;    
             font-size: 20px;
         }
+        .circle {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            margin: auto;
+        }
+        .bleu {
+            background: #7dcbe0;
+        }
+        .vert {
+            background: #62b70d;
+        }
+        .jaune {
+            background: #ffe000;
+        }
+        .orange {
+            background: #fc9000;
+        }
+        .rouge {
+            background: #f3120d;
+        }
+        .noir {
+            background: #000000;
+        }
+        .unknown {
+            border-color: #000000;
+            border-style: solid;
+            border-width: thin;
+            background: #ffffff;
+        }
 
     </style>
 </head>
@@ -102,8 +132,8 @@
                 {% for route in routes %}
                 <tr>    
                     <td class="txt">{{ route.setterName }}</td>
-                    <td class="img"><img class="grade" src="cid:grade_{{ route.grade }}" alt="{{ route.grade }}"></td>
-                    <td class="img"><img class="color" src="cid:color_{{ route.holdsColors }}" alt></td>
+                    <td class="img">{% if route.grade != "unknown"%}<div class="circle {{ route.grade }}"></div>{% else %}N/A{% endif %}</td>
+                    <td class="img"><img class="color" src="cid:images/color_{{ route.holdsColors }}"></td>
                     <td class="img">{{ route.island if route.island != 0 else '-' }}</td>
                     <td class="img">{{ route.section if route.section != 0 else '-' }}</td>
                 </tr>
