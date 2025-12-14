@@ -2,6 +2,7 @@
 *.csv
 *.sh
 *.log
+*.png
 .venv/
 __pycache__/
 recipients.txt
