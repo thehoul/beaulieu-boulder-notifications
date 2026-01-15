@@ -16,7 +16,8 @@ def send_email(html_content, subject, recipients, images=[]):
     msg = MIMEMultipart("related")
     msg["Subject"] = subject
     msg["From"] = username
-    msg["To"] = ", ".join(recipients)
+    msg["To"] = os.environ['ADDRESS'] # Send to self, use Bcc for actual recipients
+    msg["Bcc"] = ", ".join(recipients)
 
     part_html = MIMEText(html_content, "html")
     msg.attach(part_html)
@@ -33,4 +34,4 @@ def send_email(html_content, subject, recipients, images=[]):
     with smtplib.SMTP(smtp_host, smtp_port) as server:
         server.starttls()
         server.login(username, password)
-        server.sendmail(username, recipients, msg.as_string())
+        server.sendmail(username, os.environ['ADDRESS'], msg.as_string())
