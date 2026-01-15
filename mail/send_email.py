@@ -16,7 +16,7 @@ def send_email(html_content, subject, recipients, images=[]):
     msg = MIMEMultipart("related")
     msg["Subject"] = subject
     msg["From"] = username
-    msg["To"] = ", ".join(recipients)
+    msg["Bcc"] = ", ".join(recipients)
 
     part_html = MIMEText(html_content, "html")
     msg.attach(part_html)
