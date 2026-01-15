@@ -8,6 +8,7 @@ import os
 import pandas as pd
 from util.logging import get_logger
 from util.config import get_section
+from lm import send_campaign
 
 logger = get_logger("main")
 LOCATION = get_section("GYM")['LOCATION']
@@ -22,7 +23,8 @@ template = env.get_template(TEMPLATE)
 
 # Update the routes record and load today's new routes
 update_routes_record()
-today = datetime.today().strftime("%Y-%m-%d")
+#today = datetime.today().strftime("%Y-%m-%d")
+today = "2025-12-18"
 new_routes = get_routes_at_date(today)
 if new_routes.empty:
     logger.info("No new routes found for today")
@@ -72,10 +74,16 @@ if not os.path.exists("recipients.txt"):
 with open("recipients.txt", "r") as f:
     recipients = [line.strip() for line in f if line.strip()]
 
+
 # Send the email
+subject = f"Nouveaux blocs à {LOCATION} le {today} !!"
+send_campaign(html_content, subject)
+
+'''
 send_email(html_content, 
     subject=f"Nouveaux blocs à {LOCATION} le {today} !!", 
     recipients=recipients,
     images=images_attachements)
+'''
 
 logger.info("Email sent!")
