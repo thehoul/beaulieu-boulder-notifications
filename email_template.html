@@ -1,148 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Template</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border: 1px solid #dddddd;
-            text-align: center;
-        }
-        h1 {
-            color: #333333;
-        }
-        p {
-            color: #555555;
-        }
+<div class="container">
+    <h1>{{ nb }} nouveaux blocs le {{ date }}</h1>
 
-        img.color {
-            width: 40px;
-            height: 40px;
-        }
-        img.grade {
-            width: 20px;
-            height: 20px;
-        }
-        img.map {
-            width: 400px;
+    {% for stat in stats %}
+    <p>{{ stat.count }} {{ stat.grade }}{{ 's' if stat.count > 1 }}</p>
+    {% endfor %}
+    <br>
+    
+    <h2>Nouveaux blocs</h2>
+    <table>
+        <thead>
+            <tr>
+                <th class="txt">Ouvreur</th>
+                <th class="img">Difficulté</th>
+                <th class="img">Couleur</th>
+                <th class="img">Bloc</th>
+                <th class="img">Secteur</th>
+        </thead>
+        <tbody>
+            {% for route in routes %}
+            <tr>    
+                <td class="txt">{{ route.setterName }}</td>
+                <td class="img">{% if route.grade != "unknown"%}<div class="circle {{ route.grade }}"></div>{% else %}N/A{% endif %}</td>
+                <td class="img"><img class="color" src="{{ route.hold_color_image_url }}"></td>
+                <td class="img">{{ route.island if route.island != 0 else '-' }}</td>
+                <td class="img">{{ route.section if route.section != 0 else '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
 
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        th.txt {
-            text-align: left;
-            
-        }
-        th.img {
-            text-align: center;
-        }
-        td.img {
-            text-align: center;
-        }
-        td.txt {
-            text-align: left;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        svg {
-            width: 400px;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-        p {
-            text-align: left;
-            font-size: 15px;
-            padding: 0px 0;
-            margin: 0;
-        }
-        h2 {
-            text-align: left;    
-            font-size: 20px;
-        }
-        .circle {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            margin: auto;
-        }
-        .bleu {
-            background: #7dcbe0;
-        }
-        .vert {
-            background: #62b70d;
-        }
-        .jaune {
-            background: #ffe000;
-        }
-        .orange {
-            background: #fc9000;
-        }
-        .rouge {
-            background: #f3120d;
-        }
-        .noir {
-            background: #000000;
-        }
-        .unknown {
-            border-color: #000000;
-            border-style: solid;
-            border-width: thin;
-            background: #ffffff;
-        }
-
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>{{ nb }} nouveaux blocs le {{ date }}</h1>
-
-        {% for stat in stats %}
-        <p>{{ stat.count }} {{ stat.grade }}{{ 's' if stat.count > 1 }}</p>
-        {% endfor %}
-        <br>
-        
-        <h2>Nouveaux blocs</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th class="txt">Ouvreur</th>
-                    <th class="img">Difficulté</th>
-                    <th class="img">Couleur</th>
-                    <th class="img">Bloc</th>
-                    <th class="img">Secteur</th>
-            </thead>
-            <tbody>
-                {% for route in routes %}
-                <tr>    
-                    <td class="txt">{{ route.setterName }}</td>
-                    <td class="img">{% if route.grade != "unknown"%}<div class="circle {{ route.grade }}"></div>{% else %}N/A{% endif %}</td>
-                    <td class="img"><img class="color" src="{{ route.hold_color_image_url }}"></td>
-                    <td class="img">{{ route.island if route.island != 0 else '-' }}</td>
-                    <td class="img">{{ route.section if route.section != 0 else '-' }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-
-        </table>
-        <h2>Emplacement</h2>
-        <img class="map" src="{{ gym_map_url }}" alt="Gym Map">
-    </div>
-</body>
-</html>
+    </table>
+    <h2>Emplacement</h2>
+    <img class="map" src="{{ gym_map_url }}" alt="Gym Map">
+</div>
