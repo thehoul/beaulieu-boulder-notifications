@@ -1,8 +1,7 @@
 from datetime import datetime
-from images.images import check_or_upload_hold_image, svg_to_png, get_hold_color_image_url
+from images.images import check_or_upload_hold_image, get_hold_color_image_url
 from routes import get_routes_at_date, update_routes_record
-from mail.send_email import send_email
-from map import highlight_map, get_map, set_map_size
+from map import GymMap
 from jinja2 import Environment, FileSystemLoader
 import os
 import pandas as pd # type: ignore
@@ -41,21 +40,11 @@ per_grade['grade'] = pd.Categorical(per_grade['grade'], categories=DEFAULT_GRADE
 per_grade = per_grade.sort_values('grade')
 stat_grades = per_grade.to_dict(orient='records')
 
-# Get and modify the gym map SVG to highlight the sectors
-images_attachements = []
+# Get and modify the default gym map SVG to highlight the sectors
 new_routes['sector-section'] = new_routes.apply(lambda row: (row['sector'], int(row['section'])), axis=1)
 sectors = new_routes['sector-section'].unique()
-svg = get_map()
-
-# Highlight the sectors/sections on the map
-for sector in sectors:
-    svg = highlight_map(svg, sector[0], sector[1])
-
-# Set the width and height of the map for better visibility
-svg = set_map_size(svg, 1020, 865)
-gym_map_path = "gym_map.png"
-svg_to_png(svg, gym_map_path)
-images_attachements.append(gym_map_path)
+gym_map = GymMap(sectors)
+gym_map.upload_map()
 
 # For image hold image, check if uploaded, else upload it
 holds_colors = new_routes['holdsColors'].unique()
@@ -65,7 +54,7 @@ for hold_color in holds_colors:
 new_routes['hold_color_image_url'] = new_routes['holdsColors'].apply(get_hold_color_image_url)
 
 # Render the template with the routes data
-html_content = template.render(routes=new_routes.to_dict(orient='records'), date=today, nb=len(new_routes), stats=stat_grades)
+html_content = template.render(routes=new_routes.to_dict(orient='records'), date=today, nb=len(new_routes), stats=stat_grades, gym_map_url=gym_map.get_map_url())
 
 # Verify recipients file exists
 if not os.path.exists("recipients.txt"):
@@ -81,12 +70,4 @@ if len(list_ids) == 0:
     raise ValueError("Campaign ID not found. Cannot send email.")
 subject = f"Nouveaux blocs à {LOCATION} le {today} !!"
 send_campaign(list_ids[0], html_content, subject)
-
-'''
-send_email(html_content, 
-    subject=f"Nouveaux blocs à {LOCATION} le {today} !!", 
-    recipients=recipients,
-    images=images_attachements)
-'''
-
 logger.info("Email sent!")

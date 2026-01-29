@@ -9,10 +9,10 @@ logger = get_logger("imageLoader")
 urls_config = get_section("URLS")
 
 def check_hold_image_uploaded(hold_color):
-    image_url = f"/media/color_{hold_color}.png"
+    image_name = f"color_{hold_color}.png"
     all_media = get_all_media()
     for media in all_media:
-        if media["url"] == image_url:
+        if media["filename"] == image_name:
             return True
     return False
 
