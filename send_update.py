@@ -7,7 +7,7 @@ import os
 import pandas as pd # type: ignore
 from util.logging import get_logger
 from util.config import get_section
-from listmonk.lm import get_list_ids, send_campaign
+from listmonk.lm import send_campaign
 
 logger = get_logger("main")
 LOCATION = get_section("GYM")['LOCATION']
@@ -55,14 +55,6 @@ new_routes['hold_color_image_url'] = new_routes['holdsColors'].apply(get_hold_co
 
 # Render the template with the routes data
 html_content = template.render(routes=new_routes.to_dict(orient='records'), date=today, nb=len(new_routes), stats=stat_grades, gym_map_url=gym_map.get_map_url())
-
-# Verify recipients file exists
-if not os.path.exists("recipients.txt"):
-    raise FileNotFoundError("Recipients file 'recipients.txt' not found.")
-# Read recipients from a file
-with open("recipients.txt", "r") as f:
-    recipients = [line.strip() for line in f if line.strip()]
-
 
 # Send the email
 subject = f"Nouveaux blocs à {LOCATION} le {today} !!"

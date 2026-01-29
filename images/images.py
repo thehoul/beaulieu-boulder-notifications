@@ -36,8 +36,7 @@ def check_or_upload_hold_image(hold_color):
     return True
 
 def get_hold_color_image_url(hold_color):
-    return f"{urls_config["LM_BASE_URL"]}/uploads/color_{hold_color}.png"
-
+    return f"{get_section('LISTMONK')['BASE_URL']}/uploads/color_{hold_color}.png"
 
 # Return the path of the hold image based on the hold color
 # download the image if it does not exist locally
