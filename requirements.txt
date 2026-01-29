@@ -5,4 +5,3 @@ lxml
 beautifulsoup4
 jinja2
 dotenv
-listmonk

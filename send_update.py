@@ -1,5 +1,5 @@
 from datetime import datetime
-from images.images import get_hold_image, svg_to_png
+from images.images import check_or_upload_hold_image, svg_to_png, get_hold_color_image_url
 from routes import get_routes_at_date, update_routes_record
 from mail.send_email import send_email
 from map import highlight_map, get_map, set_map_size
@@ -8,7 +8,7 @@ import os
 import pandas as pd # type: ignore
 from util.logging import get_logger
 from util.config import get_section
-from mail.lm import get_list_ids, send_campaign
+from listmonk.lm import get_list_ids, send_campaign
 
 logger = get_logger("main")
 LOCATION = get_section("GYM")['LOCATION']
@@ -57,12 +57,12 @@ gym_map_path = "gym_map.png"
 svg_to_png(svg, gym_map_path)
 images_attachements.append(gym_map_path)
 
-# Get the images for holds
+# For image hold image, check if uploaded, else upload it
 holds_colors = new_routes['holdsColors'].unique()
 for hold_color in holds_colors:
-    image_path = get_hold_image(hold_color)
-    if image_path:
-        images_attachements.append(image_path)
+    check_or_upload_hold_image(hold_color)
+# Add hold color image URLs to the routes data
+new_routes['hold_color_image_url'] = new_routes['holdsColors'].apply(get_hold_color_image_url)
 
 # Render the template with the routes data
 html_content = template.render(routes=new_routes.to_dict(orient='records'), date=today, nb=len(new_routes), stats=stat_grades)

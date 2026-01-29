@@ -1,5 +1,6 @@
 import requests as req
 from cairosvg import svg2png
+from listmonk.lm import get_all_media, upload_media
 from util.config import get_section
 from util.logging import get_logger
 from pathlib import Path
@@ -7,8 +8,39 @@ from pathlib import Path
 logger = get_logger("imageLoader")
 urls_config = get_section("URLS")
 
+def check_hold_image_uploaded(hold_color):
+    image_url = f"/media/color_{hold_color}.png"
+    all_media = get_all_media()
+    for media in all_media:
+        if media["url"] == image_url:
+            return True
+    return False
+
+def check_or_upload_hold_image(hold_color):
+    # If the image is already uploaded, do nothing
+    if check_hold_image_uploaded(hold_color):
+        return False
+    
+    # Download the image
+    image_path = get_hold_image(hold_color)
+    if image_path is None:
+        logger.error(f"Could not download image for hold color {hold_color}")
+        return False
+    
+    # Upload the image
+    data = upload_media(image_path)
+    logger.info(f"Uploaded image for hold color {hold_color} with media ID {data['id']} and name {data['filename']}")
+
+    # Delete the local image file
+    Path(image_path).unlink()
+    return True
+
+def get_hold_color_image_url(hold_color):
+    return f"{urls_config["LM_BASE_URL"]}/uploads/color_{hold_color}.png"
+
+
 # Return the path of the hold image based on the hold color
-# download the image if it does not exit locally
+# download the image if it does not exist locally
 def get_hold_image(color):
     image_path = f"images/color_{color}.png"
     if Path(image_path).exists():
