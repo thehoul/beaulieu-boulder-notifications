@@ -5,7 +5,7 @@ from mail.send_email import send_email
 from map import highlight_map, get_map, set_map_size
 from jinja2 import Environment, FileSystemLoader
 import os
-import pandas as pd
+import pandas as pd # type: ignore
 from util.logging import get_logger
 from util.config import get_section
 from mail.lm import get_campaign_id, send_campaign

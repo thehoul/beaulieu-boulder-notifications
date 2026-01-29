@@ -1,7 +1,7 @@
 import os
-import listmonk
+import listmonk # type: ignore
 from datetime import datetime, timedelta
-import dotenv
+import dotenv # type: ignore
 import requests
 
 dotenv.load_dotenv()
