@@ -94,12 +94,14 @@ def get_default_map_id():
             return media["id"]
     return None
 
+# Return the SVG content of the blank gym map. If the svg is not uploaded yet, 
+# assume that it is present locally and upload it.
 def get_blank_map_svg():
     id = get_default_map_id()
     if id is None:
-        # TODO: download default map SVG from a URL and upload it
-        logger.error("No default map SVG found in media")
-        return None
+        logger.error("No default map SVG found in listmonk. Assuming the svg is present locally and will attempting to upload it.")
+        data = upload_media("default_map.svg")
+        id = data["id"]
     media = get_media(id)
     url = media["url"]
     resp = requests.get(url)
