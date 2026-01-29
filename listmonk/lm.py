@@ -6,9 +6,11 @@ from util.config import get_section
 
 dotenv.load_dotenv()
 
-lm_api_url = get_section("URLS")["LM_API_URL"]
+lm_config = get_section("LISTMONK")
+lm_api_url = lm_config["API_URL"]
+list_id = int(lm_config["LIST_ID"])
 
-def send_campaign(list_id, body, subject):
+def send_campaign(body, subject):
     pwd = os.getenv("LISTMONK_PWD")
     user = os.getenv("LISTMONK_USR")
 
@@ -30,11 +32,6 @@ def send_campaign(list_id, body, subject):
     campaign_id = resp.json()["data"]["id"]
     schedule_campaign(campaign_id)
 
-def get_list_ids():
-    ls = get_lists()
-    keys = list(ls.keys())
-    return keys
-
 def schedule_campaign(campaign_id):
     pwd = os.getenv("LISTMONK_PWD")
     user = os.getenv("LISTMONK_USR")
@@ -46,22 +43,6 @@ def schedule_campaign(campaign_id):
         },
     )
     resp.raise_for_status()
-
-def get_lists():
-    pwd = os.getenv("LISTMONK_PWD")
-    user = os.getenv("LISTMONK_USR")
-
-    resp = requests.get(f"{lm_api_url}/lists",
-        auth=(user, pwd),
-    )
-
-    resp.raise_for_status()
-    data = resp.json()["data"]["results"]
-    ls = {}
-    for l in data:
-        ls[l["id"]] = l["name"]
-    return ls
-
 
 def get_media(media_id):
     pwd = os.getenv("LISTMONK_PWD")

@@ -65,9 +65,6 @@ with open("recipients.txt", "r") as f:
 
 
 # Send the email
-list_ids = get_list_ids()
-if len(list_ids) == 0:
-    raise ValueError("Campaign ID not found. Cannot send email.")
 subject = f"Nouveaux blocs à {LOCATION} le {today} !!"
-send_campaign(list_ids[0], html_content, subject)
+send_campaign(html_content, subject)
 logger.info("Email sent!")
