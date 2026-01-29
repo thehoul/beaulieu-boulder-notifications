@@ -7,11 +7,13 @@ dotenv.load_dotenv()
 
 lm_config = get_section("LISTMONK")
 lm_api_url = lm_config["API_URL"]
-list_id = int(lm_config["LIST_ID"])
 
 def send_campaign(body, subject, at):
     pwd = os.getenv("LISTMONK_PWD")
     user = os.getenv("LISTMONK_USR")
+
+    list_id = int(lm_config["LIST_ID"])
+    template_id = int(lm_config["TEMPLATE_ID"])
 
     resp = requests.post(
         f"{lm_api_url}/campaigns",
@@ -22,6 +24,7 @@ def send_campaign(body, subject, at):
             "body": body,
             "send_at": at,
             "lists": [list_id],
+            "template_id": template_id,
         },
     )
 
