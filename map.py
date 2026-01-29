@@ -7,7 +7,6 @@ from util.logging import get_logger
 from util.config import get_section
 
 logger = get_logger("mapLogger")
-MAP_PATH = get_section("IMAGES")['MAP_PATH']
 
 class GymMap:
     def __init__(self, sectors, png_width=1020, png_height=865):
@@ -80,10 +79,6 @@ def highlight_map(content, sector_id, section):
     
     section["style"] = "fill:rgba(255,0,0,.5)"
     return str(soup)
-
-def get_map():
-    with open(MAP_PATH, "rb") as f:
-        return f.read()
     
 def get_map_media_id():
     all_media = get_all_media()
