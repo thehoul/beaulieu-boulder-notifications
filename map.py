@@ -1,4 +1,4 @@
-from cairo import Path
+from pathlib import Path
 import requests
 from bs4 import BeautifulSoup # type: ignore
 from images.images import svg_to_png
