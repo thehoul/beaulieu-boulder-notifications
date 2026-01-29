@@ -3,21 +3,24 @@ import listmonk # type: ignore
 from datetime import datetime, timedelta
 import dotenv # type: ignore
 import requests
+from util.config import get_section 
 
 dotenv.load_dotenv()
+
+lm_base_url = get_section("URLS")["LM_API_URL"]
 
 def send_campaign(list_id, body, subject):
     pwd = os.getenv("LISTMONK_PWD")
     user = os.getenv("LISTMONK_USR")
 
     resp = requests.post(
-        "http://192.168.1.37:9000/api/campaigns",
+        f"{lm_base_url}/campaigns",
         auth=(user, pwd),
         json={
             "name": "New boulders",
             "subject": subject,
             "body": body,
-            "send_at": (datetime.now() - timedelta(hours=1) + timedelta(minutes=1)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "send_at": (datetime.now() + timedelta(minutes=1)).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "lists": [list_id],
         },
     )
@@ -28,18 +31,16 @@ def send_campaign(list_id, body, subject):
     campaign_id = resp.json()["data"]["id"]
     schedule_campaign(campaign_id)
 
-def get_campaign_id(campaign_name):
+def get_list_ids():
     ls = get_lists()
-    for name, key in ls.items():
-        if name == campaign_name:
-            return key
-    return None
+    keys = list(ls.keys())
+    return keys
 
 def schedule_campaign(campaign_id):
     pwd = os.getenv("LISTMONK_PWD")
     user = os.getenv("LISTMONK_USR")
 
-    resp = requests.put("http://192.168.1.37:9000/api/campaigns/{campaign_id}/status".format(campaign_id=campaign_id),
+    resp = requests.put(f"{lm_base_url}/campaigns/{campaign_id}/status",
         auth=(user, pwd),
         json={
             "status": "scheduled"
@@ -51,7 +52,7 @@ def get_lists():
     pwd = os.getenv("LISTMONK_PWD")
     user = os.getenv("LISTMONK_USR")
 
-    resp = requests.get("http://192.168.1.37:9000/api/lists",
+    resp = requests.get(f"{lm_base_url}/lists",
         auth=(user, pwd),
     )
 
@@ -61,8 +62,3 @@ def get_lists():
     for l in data:
         ls[l["id"]] = l["name"]
     return ls
-
-#send_campaign("<h1>Test</h1>", "Test Subject")
-ls = get_campaign_id()
-print(ls)
-
