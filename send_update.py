@@ -8,7 +8,7 @@ import os
 import pandas as pd
 from util.logging import get_logger
 from util.config import get_section
-from lm import send_campaign
+from mail.lm import get_campaign_id, send_campaign
 
 logger = get_logger("main")
 LOCATION = get_section("GYM")['LOCATION']
@@ -76,8 +76,11 @@ with open("recipients.txt", "r") as f:
 
 
 # Send the email
+campaign_id = get_campaign_id("Beaulieu Boulder Updates")
+if campaign_id is None:
+    raise ValueError("Campaign ID not found for 'Beaulieu Boulder Updates'")
 subject = f"Nouveaux blocs à {LOCATION} le {today} !!"
-send_campaign(html_content, subject)
+send_campaign(campaign_id, html_content, subject)
 
 '''
 send_email(html_content, 
