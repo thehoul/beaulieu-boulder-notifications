@@ -35,7 +35,4 @@ Also, there are a lot of potential for improving this. It is just a minimal work
 
 ## Futur improvements
 
-- Improve how grade and holds images are handled. 
-    
-    Right now, they are downloaded each time the program is run. It would be nice to have the set locally. Even better, it would be nice to have them available via the internet so that they don't need to be sent as attachements. I am just afraid that the website might change someday and the images change. The way it works now is by using the images provided by the website so if they change, the script will adapt.
 - Potentially move from python to ...? This is just a challenge for myself to learn something new and probably more adapted than python.
