@@ -1,5 +1,4 @@
 import os
-from datetime import datetime, timedelta
 import dotenv # type: ignore
 import requests
 from util.config import get_section 
@@ -10,7 +9,7 @@ lm_config = get_section("LISTMONK")
 lm_api_url = lm_config["API_URL"]
 list_id = int(lm_config["LIST_ID"])
 
-def send_campaign(body, subject):
+def send_campaign(body, subject, at):
     pwd = os.getenv("LISTMONK_PWD")
     user = os.getenv("LISTMONK_USR")
 
@@ -21,7 +20,7 @@ def send_campaign(body, subject):
             "name": "New boulders",
             "subject": subject,
             "body": body,
-            "send_at": (datetime.now() + timedelta(minutes=1)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "send_at": at,
             "lists": [list_id],
         },
     )

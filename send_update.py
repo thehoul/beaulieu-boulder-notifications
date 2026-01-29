@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from images.images import check_or_upload_hold_image, get_hold_color_image_url
 from routes import get_routes_at_date, update_routes_record
 from map import GymMap
@@ -57,6 +57,7 @@ new_routes['hold_color_image_url'] = new_routes['holdsColors'].apply(get_hold_co
 html_content = template.render(routes=new_routes.to_dict(orient='records'), date=today, nb=len(new_routes), stats=stat_grades, gym_map_url=gym_map.get_map_url())
 
 # Send the email
+send_at = (datetime.now(tz=timezone.utc) + timedelta(minutes=1)).strftime("%Y-%m-%dT%H:%M:%SZ")
 subject = f"Nouveaux blocs à {LOCATION} le {today} !!"
-send_campaign(html_content, subject)
+send_campaign(html_content, subject, send_at)
 logger.info("Email sent!")
