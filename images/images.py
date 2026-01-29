@@ -1,5 +1,5 @@
 import requests as req
-from cairosvg import svg2png
+from cairosvg import svg2png # type: ignore
 from listmonk.lm import get_all_media, upload_media
 from util.config import get_section
 from util.logging import get_logger

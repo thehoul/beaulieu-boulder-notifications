@@ -1,6 +1,6 @@
 from cairo import Path
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup # type: ignore
 from images.images import svg_to_png
 from listmonk.lm import delete_media, get_all_media, get_media, upload_media
 from util.logging import get_logger
